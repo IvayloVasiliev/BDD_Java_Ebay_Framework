@@ -1,5 +1,6 @@
 package hooks;
 
+import context.TestContext;
 import factory.DriverFactory;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -11,27 +12,32 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 public class Hooks {
-    protected WebDriver driver;
+    private WebDriver driver;
+    private TestContext context;
+
     private static Logger log = LogManager.getLogger(Hooks.class);
 
-    private final static String chromeBrowser = "Chrome";
+    public Hooks(TestContext context) {
+        this.context = context;
+    }
 
     @Before
     public void setupDriver(Scenario scenario){
-        //String browserToUse = config().browser();
         driver = new DriverFactory().createDriverInstance("Chrome");
-       // Driver.setupDriver(chromeBrowser);
+        context.driver = driver;
         log.info("Chrome browser instantiated!!!");
+        log.info(scenario.getName() + "test scenario is executing!!!");
+
     }
 
     @After
-    public static void tearDown(Scenario scenario) {
-      //  if(scenario.isFailed()) {
-      //      final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-      //      scenario.attach(screenshot, "image/png", scenario.getName());
-      //      log.info("Scenario: " + scenario.getName() + " has failed and screenshots are taken!");
-      //  }
-      //  log.info("Driver is quiting...");
-      //  driver.quit();
+    public void tearDown(Scenario scenario) {
+        if(scenario.isFailed()) {
+            final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png", scenario.getName());
+            log.info("Scenario: " + scenario.getName() + " has failed and screenshots are taken!");
+        }
+        log.info("Driver is quiting...");
+        driver.quit();
     }
 }
