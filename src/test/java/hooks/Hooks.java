@@ -27,7 +27,6 @@ public class Hooks {
         context.driver = driver;
         log.info("Chrome browser instantiated!!!");
         log.info(scenario.getName() + "test scenario is executing!!!");
-
     }
 
     @After

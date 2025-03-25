@@ -26,12 +26,13 @@ public class ResultPage extends BasePage {
 
     public ResultPage(WebDriver driver) {super(driver);}
 
-    public void countAndDisplayVwAds() {
+    public String countAndDisplayVwAds() {
         wait.until(ExpectedConditions.visibilityOf(numberOfAds));
         String numberText = numberOfAds.getText();
         String number = numberText.substring(14);
         log.info("The number of Volkswagen Golfs with four wheel drive on sale on mobile.bg is -" + number);
         System.out.println("The number of Volkswagen Golfs with four wheel drive on sale on mobile.bg is -" + number);
+        return number;
     }
     public void countVipAds() {
         List<WebElement> vipAds = driver.findElements(By.xpath(vipAd));
@@ -53,5 +54,4 @@ public class ResultPage extends BasePage {
         System.out.println("The number of TOP ads is - " + topAds.size());
         System.out.println("The number of BEST ads is - " + bestAds.size());
     }
-
 }

@@ -10,8 +10,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Locale;
 
 public class BasePage {
     protected WebDriver driver;
@@ -22,20 +20,19 @@ public class BasePage {
 
     @FindBy(id = "cookiescript_accept")
     public WebElement cookiesAcceptButton;
-    @FindBy(xpath = "//a[text()='Търсене']")
-    public WebElement searchButton;
     @FindBy(css = "input[name='model_show']")
     public WebElement modelInputField;
     @FindBy(xpath = "//a[text()='ОК']")
     public WebElement OkDropdownButton;
 
-    protected String dropdownListOptions = "//span[text()='%s']";
-    protected String buttonElement = "//a[text()='%s']";
-    protected String dropdownInput = "//title[text()='%s']/..//input";
+    protected String spanElementSearchByText = "//span[text()='%s']";
+    protected String aElementSearchByText = "//a[text()='%s']";
 
     public BasePage(WebDriver driver){
         this.driver = driver;
-        wait = new FluentWait(driver).ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class).withTimeout(Duration.ofSeconds(30)).pollingEvery(Duration.ofSeconds(3));
+        wait = new FluentWait(driver).ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class)
+                .withTimeout(Duration.ofSeconds(20))
+                .pollingEvery(Duration.ofSeconds(2));
         PageFactory.initElements(driver, this);
     }
 
@@ -51,11 +48,19 @@ public class BasePage {
     }
 
     public void clickButton(String buttonName){
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(buttonElement, buttonName))));
-        WebElement button = driver.findElement(By.xpath(String.format(buttonElement, buttonName)));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(aElementSearchByText, buttonName))));
+        WebElement button = driver.findElement(By.xpath(String.format(aElementSearchByText, buttonName)));
         highlightElement(button);
         button.click();
         log.info(buttonName +" button is clicked!");
+    }
+
+    public void clickOnTab(String tabName) {
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(aElementSearchByText, tabName))));
+        WebElement tabElement = driver.findElement(By.xpath(String.format(aElementSearchByText, tabName)));
+        highlightElement(tabElement);
+        tabElement.click();
+        log.info(tabName +" tab is clicked!");
     }
 
     public void highlightElement(WebElement element) {
@@ -68,26 +73,6 @@ public class BasePage {
         return driver.getCurrentUrl();
     }
 
-    public void selectOptionFromDropdownByTextInput(String option, String dropdownName) {
-        WebElement dropdowwnInput = driver.findElement(By.xpath(String.format(dropdownInput, dropdownName)));
-        dropdowwnInput.sendKeys(option);
-        List<WebElement> list = driver.findElements(By.xpath(String.format(dropdownListOptions, option)));
-        WebElement element = list.get(1);
-        highlightElement(element);
-        element.click();
-    }
-
-    public void selectOptionFromDropdownWithLabel(String option, String dropdownName) {
-        wait.until(ExpectedConditions.visibilityOf(modelInputField));
-        wait.until(ExpectedConditions.elementToBeClickable(modelInputField));
-        modelInputField.click();
-        List<WebElement> list = driver.findElements(By.xpath(String.format(dropdownListOptions, option)));
-        WebElement element = list.get(0);
-        highlightElement(element);
-        scrollToElementAndClick(element);
-        scrollToElementAndClick(OkDropdownButton);
-    }
-
     public void scrollToElementAndClick(WebElement element) {
         Actions actions = new Actions(driver);
         actions.moveToElement(element);
@@ -96,8 +81,9 @@ public class BasePage {
     }
 
     public void clickOnSpanElement(String elementName) {
-        WebElement element = driver.findElement(By.xpath(String.format(dropdownListOptions, elementName)));
+        WebElement element = driver.findElement(By.xpath(String.format(spanElementSearchByText, elementName)));
         highlightElement(element);
         scrollToElementAndClick(element);
+        log.info("I click on " + elementName + " element");
     }
 }
