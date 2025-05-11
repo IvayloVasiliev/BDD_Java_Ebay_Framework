@@ -16,9 +16,9 @@ public class BasePage {
     protected FluentWait wait;
     protected static Logger log = LogManager.getLogger(BasePage.class);
 
-    private static final String basePage = "https://www.mobile.bg/";
+    private static final String basePage = "https://ebay.com/";
 
-    @FindBy(id = "cookiescript_accept")
+    @FindBy(id = "user-agreement-banner-decline")
     public WebElement cookiesAcceptButton;
     @FindBy(css = "input[name='model_show']")
     public WebElement modelInputField;
