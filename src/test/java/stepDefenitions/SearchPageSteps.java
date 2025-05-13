@@ -2,6 +2,7 @@ package stepDefenitions;
 
 import context.TestContext;
 import io.cucumber.java.en.And;
+import org.testng.Assert;
 import pages.BasePage;
 import pages.SearchPage;
 
@@ -16,18 +17,23 @@ public class SearchPageSteps {
         basePage = new BasePage(context.driver);
         searchPage = new SearchPage(context.driver);
     }
-
-    @And("I select {string} from {string} dropdown")
-    public void iSelectFromDropdown(String option, String dropdownName) {
-        if(dropdownName.equals("Марка")){
-            searchPage.selectOptionFromDropdownByTextInput(option);
-        } else if (dropdownName.equals("Модел")) {
-            searchPage.selectOptionFromDropdownWithLabel(option);
-        }
+    @And("I verify that the first found item has title {string}")
+    public void iVerifyThatTheFirstFoundItemHasTitle(String expectedItemName) {
+        Assert.assertTrue(searchPage.firstFoundItem().contains(expectedItemName));
     }
 
-    @And("I mark element {string} by clicking on it")
-    public void iMarkElementByClickingOnIt(String elementName) {
-        basePage.clickOnSpanElement(elementName);
+    @And("I verify that the item could be shipped to {string}")
+    public void iVerifyThatTheItemCouldBeShippedTo(String expectedCountry) {
+        Assert.assertTrue(searchPage.isCountryVisible().matches(expectedCountry));
+    }
+
+    @And("I verify and store the price of the first item")
+    public void iVerifyAndStoreThePriceOfTheFirstItem() {
+        context.price = searchPage.getItemPrice();
+    }
+
+    @And("I click on the first item")
+    public void IClickOnTheFirstItem() {
+        searchPage.clickOnFirstItem();
     }
 }

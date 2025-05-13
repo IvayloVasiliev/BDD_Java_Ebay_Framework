@@ -3,7 +3,6 @@ package stepDefenitions;
 import context.TestContext;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
@@ -23,10 +22,6 @@ public class CommonSteps {
     public void i_navigate_to_page(String page) {
         basePage.navigateToPage(page);
     }
-    @When("I click on {string} tab")
-    public void iClickOnTab(String tabName) {
-        basePage.clickOnTab(tabName);
-    }
 
     @And("I click on {string} button")
     public void iClickOnButton(String buttonName) {
@@ -38,5 +33,14 @@ public class CommonSteps {
         String actualPageName = basePage.isPageOpen();
         Assert.assertTrue(actualPageName.contains(expectedPageName));
         log.info(expectedPageName + " page is open.");
+    }
+    @And("I select {string} from {string} dropdown")
+    public void iSelectFromDropdown(String option, String dropdownName) {
+        basePage.selectOptionFromDropdownByTextInput(option);
+    }
+
+    @And("I provide text {string} in searchbox")
+    public void iProvideTextInSearchbox(String text) {
+        basePage.provideTextToSerchBox(text);
     }
 }

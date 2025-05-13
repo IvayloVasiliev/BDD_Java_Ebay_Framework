@@ -8,8 +8,11 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Select;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Set;
 
 public class BasePage {
     protected WebDriver driver;
@@ -20,10 +23,10 @@ public class BasePage {
 
     @FindBy(id = "user-agreement-banner-decline")
     public WebElement cookiesAcceptButton;
-    @FindBy(css = "input[name='model_show']")
-    public WebElement modelInputField;
-    @FindBy(xpath = "//a[text()='ОК']")
-    public WebElement OkDropdownButton;
+    @FindBy(id = "gh-ac")
+    public WebElement searchBox;
+    @FindBy(id = "gh-cat")
+    public WebElement dropdown;
 
     protected String spanElementSearchByText = "//span[text()='%s']";
     protected String aElementSearchByText = "//a[text()='%s']";
@@ -48,8 +51,8 @@ public class BasePage {
     }
 
     public void clickButton(String buttonName){
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(aElementSearchByText, buttonName))));
-        WebElement button = driver.findElement(By.xpath(String.format(aElementSearchByText, buttonName)));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(spanElementSearchByText, buttonName))));
+        WebElement button = driver.findElement(By.xpath(String.format(spanElementSearchByText, buttonName)));
         highlightElement(button);
         button.click();
         log.info(buttonName +" button is clicked!");
@@ -86,4 +89,29 @@ public class BasePage {
         scrollToElementAndClick(element);
         log.info("I click on " + elementName + " element");
     }
+
+    public void selectOptionFromDropdownByTextInput(String option) {
+        wait.until(ExpectedConditions.visibilityOf(dropdown));
+        Select select = new Select(dropdown);
+        select.selectByVisibleText(option);
+        log.info(option + " is selected from Dropdown menu");
+    }
+
+    public void provideTextToSerchBox(String text) {
+        searchBox.sendKeys(text);
+        log.info(text + " is entered in search box");
+    }
+
+    public void switchToNewTab() {
+        String originalTab = driver.getWindowHandle();
+        Set<String> allTabs = driver.getWindowHandles();
+
+        for (String tab : allTabs) {
+            if (!tab.equals(originalTab)) {
+                driver.switchTo().window(tab);
+                break;
+            }
+        }
+    }
+
 }
