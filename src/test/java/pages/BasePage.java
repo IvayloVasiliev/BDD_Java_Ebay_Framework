@@ -29,7 +29,6 @@ public class BasePage {
     public WebElement dropdown;
 
     protected String spanElementSearchByText = "//span[text()='%s']";
-    protected String aElementSearchByText = "//a[text()='%s']";
 
     public BasePage(WebDriver driver){
         this.driver = driver;
@@ -56,14 +55,6 @@ public class BasePage {
         highlightElement(button);
         button.click();
         log.info(buttonName +" button is clicked!");
-    }
-
-    public void clickOnTab(String tabName) {
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(aElementSearchByText, tabName))));
-        WebElement tabElement = driver.findElement(By.xpath(String.format(aElementSearchByText, tabName)));
-        highlightElement(tabElement);
-        tabElement.click();
-        log.info(tabName +" tab is clicked!");
     }
 
     public void highlightElement(WebElement element) {
